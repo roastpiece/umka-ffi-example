@@ -1,8 +1,18 @@
 extern fn foo(num: int);
 extern fn bar(num: int, num2: int);
+extern fn doubleargs(num: real, num2: real);
+extern fn floatargs(num: real32, num2: real32);
+extern fn mixed(num: real, num2: int, num3: real, num4: int);
+extern fn intsizes(num: int8, num2: int16, num3: int32, num4: int);
+extern fn booltype(b: bool);
 
 fn main() {
    printf("Hello from Umka\n");
    foo(34+35);
    bar(34,35);
+   floatargs(1.5, 3.5);
+   doubleargs(1.5, 3.5);
+   mixed(5.5, 7, 3.2, 3);
+   intsizes(3, 400, 23456789, 1234567890);
+   booltype(true);
 }
