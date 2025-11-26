@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <dlfcn.h>
+
 #include "umka_api.h"
+#include "raylib.h"
 
 void foo(int num) {
     printf("Got deez %d\n", num);
@@ -57,10 +60,20 @@ void withStruct(StructWithStruct my) {
            my.structInStruct.str, my.structInStruct.num, my.structInStruct._float, my.structInStruct.str);
 }
 
+MyStruct gimmeStruct() {
+    return (MyStruct){
+        .num = 69,
+        ._float = 4.9,
+        .str = "yay",
+    };
+}
+
+typedef void open_window_t(int width, int height, const char *title);
+
 int main(int argc, char **argv) {
     Umka *umka = umkaAlloc();
 
-    bool ok = umkaInit(umka, "test.um", NULL, 4096*10, NULL, argc, argv, true, true, NULL);
+    bool ok = umkaInit(umka, "raylib-example.um", NULL, 4096*10, NULL, argc, argv, true, true, NULL);
     if (!ok) {
         printf("Failed to init umka :/\n");
         return 1;
@@ -73,6 +86,8 @@ int main(int argc, char **argv) {
         printf("%s:%d: ERROR: %s\n", err->fileName, err->line, err->msg);
         return 1;
     }
+
+    MyStruct thing = gimmeStruct();
 
     int run = umkaRun(umka);
     return run;

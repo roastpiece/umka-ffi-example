@@ -20,6 +20,7 @@ type StructWithStruct = struct {
 }
 
 extern fn withStruct(my: StructWithStruct);
+extern fn gimmeStruct(): MyStruct;
 
 fn main() {
     printf("Hello from Umka\n");
@@ -33,4 +34,8 @@ fn main() {
         structInStruct: other,
     }
     withStruct(mything);
+
+    myOtherThing := gimmeStruct();
+
+    printf("I got a struct im Umka: %s", myOtherThing.string);
 }

@@ -1,0 +1,3 @@
+fn *InitWindow(width: int, height: int, title: str);
+fn *CloseWindow();
+fn *WindowShouldClose(): bool;

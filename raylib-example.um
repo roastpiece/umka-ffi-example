@@ -1,0 +1,101 @@
+import (
+    "std.um"
+)
+
+extern fn InitWindow(width: int, height: int, title: str);
+extern fn CloseWindow();
+extern fn WindowShouldClose(): bool;
+extern fn SetTargetFPS(fps: int);
+extern fn GetFPS(): int;
+extern fn GetFrameTime(): real32;
+extern fn GetMouseWheelMove(): real32;
+
+extern fn BeginDrawing();
+extern fn EndDrawing();
+
+type Color = struct {
+    r: uint8;
+    g: uint8;
+    b: uint8;
+    a: uint8;
+}
+
+type Vector2 = struct {
+    x: real32;
+    y: real32;
+}
+
+extern fn ClearBackground(c: Color);
+extern fn DrawCircleV(center: Vector2, radius: real32, color: Color);
+extern fn DrawText(text: str, posX: int, posY: int, fontSize: int, color: Color);
+extern fn GetMonitorPosition(monitor: int): Vector2;
+
+RED := Color {r: 255, g: 0, b: 0, a: 255}
+BLUE := Color {r: 0, g: 0, b: 255, a: 255}
+DARKGRAY := Color {r: 80, g: 80, b: 80, a: 255}
+
+fn main() {
+    width := 800;
+    height := 450;
+
+    InitWindow(width, height, "Umka x Raylib");
+
+    deltaCircle := Vector2 { 0, height/3.0 };
+    frameCircle := Vector2 { 0, height*(2.0/3.0) };
+
+    speed := 10.0;
+    circleRadius := 10.0;
+    currentFps := 60;
+    SetTargetFPS(currentFps);
+
+    for !WindowShouldClose() {
+        ClearBackground({r: 230, g: 230, b: 230, a: 255});
+
+        mouseWheel := GetMouseWheelMove();
+        if (mouseWheel != 0) {
+            currentFps += round(mouseWheel);
+            if (currentFps < 0) {currentFps = 0;}
+            SetTargetFPS(currentFps);
+        }
+
+        deltaCircle.x += GetFrameTime() * 6.0 * speed;
+        // This circle can move faster or slower visually depending on the FPS
+        frameCircle.x += 0.1 * speed;
+
+        // If either circle is off the screen, reset it back to the start
+        if (deltaCircle.x > width) {
+            deltaCircle.x = 0;
+        }
+        if (frameCircle.x > width) {
+            frameCircle.x = 0;
+        }
+
+        BeginDrawing();
+
+            // Draw both circles to the screen
+            DrawCircleV(deltaCircle, circleRadius, RED);
+            DrawCircleV(frameCircle, circleRadius, BLUE);
+
+            // Draw the help text
+            // Determine what help text to show depending on the current FPS target
+            fpsText := "";
+            if (currentFps <= 0) {
+                fpsText = sprintf("FPS: unlimited (%i)", GetFPS());
+            } else {
+                fpsText = sprintf("FPS: %i (target: %i)", GetFPS(), currentFps);
+                monitorPos := GetMonitorPosition(1);
+                fpsText = sprintf("FPS: %i (target: %i) | Monitor Pos (%02.02f, %02.02f)", GetFPS(), currentFps, monitorPos.x, monitorPos.y);
+            }
+            DrawText(fpsText, 10, 10, 20, DARKGRAY);
+            DrawText(sprintf("Frame time: %02.02f ms", GetFrameTime()), 10, 30, 20, DARKGRAY);
+            DrawText("Use the scroll wheel to change the fps limit, r to reset", 10, 50, 20, DARKGRAY);
+
+            // Draw the text above the circles
+            DrawText("FUNC: x += GetFrameTime()*speed", 10, 90, 20, RED);
+            DrawText("FUNC: x += speed", 10, 240, 20, BLUE);
+
+        EndDrawing();
+    }
+
+    CloseWindow();
+}
