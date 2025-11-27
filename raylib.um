@@ -1,0 +1,33 @@
+// $umka raylib-example.um
+extern fn InitWindow*(width: int, height: int, title: str);
+extern fn CloseWindow*();
+extern fn WindowShouldClose*(): bool;
+extern fn SetTargetFPS*(fps: int);
+extern fn GetFPS*(): int;
+extern fn GetFrameTime*(): real32;
+extern fn GetMouseWheelMove*(): real32;
+
+extern fn BeginDrawing*();
+extern fn EndDrawing*();
+
+type Color* = struct {
+    r: uint8;
+    g: uint8;
+    b: uint8;
+    a: uint8;
+}
+
+type Vector2* = struct {
+    x: real32;
+    y: real32;
+}
+
+extern fn ClearBackground*(c: Color);
+extern fn DrawCircleV*(center: Vector2, radius: real32, color: Color);
+extern fn DrawText*(text: str, posX: int, posY: int, fontSize: int, color: Color);
+extern fn GetMonitorPosition*(monitor: int): Vector2;
+
+RED* := Color {r: 255, g: 0, b: 0, a: 255}
+BLUE* := Color {r: 0, g: 0, b: 255, a: 255}
+DARKGRAY* := Color {r: 80, g: 80, b: 80, a: 255}
+
